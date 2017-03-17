@@ -21,7 +21,7 @@ public class ProductFragment extends Fragment {
     private GridView lsvStates;
     private TextView txvName;
     private String name;
-
+    private Product product;
     public static ProductFragment newInstance(String name) {
         ProductFragment fragment = new ProductFragment();
         Bundle bundle = new Bundle();
@@ -38,11 +38,17 @@ public class ProductFragment extends Fragment {
         txvName = (TextView) view.findViewById(R.id.nameCategory);
         txvName.setText(name);
 
-
+        for (Product p: Product.values()) {
+            if(p.getNome().equals(name)){
+                product = p;
+            }
+        }
+        System.out.println(product);
         lsvStates = (GridView) view.findViewById(R.id.product_grid);
 
         System.out.println(lsvStates==null);
         // Array di elementi di esempio
+
         String[] states = {"Targhette Ovali", "Formelle 20X20", "Formelle 22X36", "Calamite mignon", "Sottopentola",
                 "Targhe con ferretto", "Targhe con spago", "Calamite pois", "Appendi porta", "I grandi classici in Cornice", "Saponi Naturali",
                 "Termometri da muro","Quadretti con ferretto","Calamite con ferretto","Calamite legno naturale","Segnalibro","Bannere l'alfabeto degli orsetti",
@@ -54,7 +60,7 @@ public class ProductFragment extends Fragment {
          * del suddetto layout che si occuperà della presentazione della stringa, e la collezzione di stringhe da presentare.
          */
 
-        ArrayAdapter<String> statesAdapter = new ArrayAdapter<>(getActivity(), R.layout.list_item_states, R.id.txv_state, states);
+        ArrayAdapter<String> statesAdapter = new ArrayAdapter<>(getActivity(), R.layout.list_item_states, R.id.txv_state, product.getCodiciProdotto());
 
         //L'adapter appena creato viene passato alla ListView tramite il metodo apposito
         lsvStates.setAdapter(statesAdapter);

@@ -37,18 +37,21 @@ public class CategoryFragment extends Fragment {
 
         System.out.println(lsvStates==null);
         // Array di elementi di esempio
-        String[] states = {"Targhette Ovali", "Formelle 20X20", "Formelle 22X36", "Calamite mignon", "Sottopentola",
+        String[] states = {"Targhette Ovali", "Formelle 20x20", "Formelle 22X36", "Calamite mignon", "Sottopentola",
                 "Targhe con ferretto", "Targhe con spago", "Calamite pois", "Appendi porta", "I grandi classici in Cornice", "Saponi Naturali",
                 "Termometri da muro","Quadretti con ferretto","Calamite con ferretto","Calamite legno naturale","Segnalibro","Bannere l'alfabeto degli orsetti",
                 "Tavole country","Espositori"};
-
+        String[] categorie = new String[Product.values().length];
+        for(int i = 0; i< Product.values().length;i++){
+            categorie[i] = Product.values()[i].getNome();
+        }
         /**
          * Creazione di un'istanza della classe ArrayAdapter. Tramite il costruttore vengono passati alla classe il riferimento all'activity
          * (tramite la parola chiave this), il nome del layout che definirà l'interfaccia di una singola cella, l'id della TextView all'interno
          * del suddetto layout che si occuperà della presentazione della stringa, e la collezzione di stringhe da presentare.
          */
 
-        ArrayAdapter<String> statesAdapter = new ArrayAdapter<>(getActivity(), R.layout.list_item_states, R.id.txv_state, states);
+        ArrayAdapter<String> statesAdapter = new ArrayAdapter<>(getActivity(), R.layout.list_item_states, R.id.txv_state, categorie);
 
         //L'adapter appena creato viene passato alla ListView tramite il metodo apposito
         lsvStates.setAdapter(statesAdapter);
