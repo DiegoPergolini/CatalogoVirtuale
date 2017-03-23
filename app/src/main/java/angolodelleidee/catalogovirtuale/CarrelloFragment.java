@@ -14,39 +14,26 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 /**
- * Created by diego on 15/03/2017.
+ * Created by diego on 18/03/2017.
  */
 
-public class ProductFragment extends Fragment {
-    private GridView lsvStates;
-    private TextView txvName;
+public class CarrelloFragment extends Fragment {
     private static Carrello carrello;
-    private String name;
-    private Product product;
-    public static ProductFragment newInstance(String name,Carrello carrelloPassato) {
-        ProductFragment fragment = new ProductFragment();
-        Bundle bundle = new Bundle();
+    ArrayAdapter<String> statesAdapter;
+    private ListView lsvStates;
+    public static CarrelloFragment newInstance(Carrello carrelloPassato) {
+        CarrelloFragment fragment = new CarrelloFragment();
         carrello = carrelloPassato;
-        bundle.putString("name", name);
-        fragment.setArguments(bundle);
         return fragment;
     }
+    public CarrelloFragment(){}
 
-    public ProductFragment(){}
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.product_layout, container, false);
-        txvName = (TextView) view.findViewById(R.id.nameCategory);
-        txvName.setText(name);
+        View view = inflater.inflate(R.layout.carrello_layout, container, false);
 
-        for (Product p: Product.values()) {
-            if(p.getNome().equals(name)){
-                product = p;
-            }
-        }
-        System.out.println(product);
-        lsvStates = (GridView) view.findViewById(R.id.product_grid);
+        lsvStates = (ListView) view.findViewById(R.id.lista_prodotti);
 
         /**
          * Creazione di un'istanza della classe ArrayAdapter. Tramite il costruttore vengono passati alla classe il riferimento all'activity
@@ -54,28 +41,28 @@ public class ProductFragment extends Fragment {
          * del suddetto layout che si occuperà della presentazione della stringa, e la collezzione di stringhe da presentare.
          */
 
-        ArrayAdapter<String> statesAdapter = new ArrayAdapter<>(getActivity(), R.layout.list_item_states, R.id.txv_state, product.getCodiciProdotto());
+       statesAdapter = new ArrayAdapter<>(getActivity(), R.layout.list_item_states, R.id.txv_state, carrello.getArticoli());
 
         //L'adapter appena creato viene passato alla ListView tramite il metodo apposito
         lsvStates.setAdapter(statesAdapter);
         lsvStates.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                System.out.println(carrello == null);
-                carrello.addProdotto(product,(String) parent.getItemAtPosition(position));
+
             }
         });
-        System.out.println(name);
         return view;
+    }
+
+    public void updateCarrello(){
+        statesAdapter.clear();
+        statesAdapter.addAll(carrello.getArticoli());
+        statesAdapter.notifyDataSetChanged();
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Bundle bundle = getArguments();
-        if (bundle != null) {
-            name = bundle.getString("name");
-        }
     }
 
     @Override
@@ -93,3 +80,4 @@ public class ProductFragment extends Fragment {
 
     }
 }
+

@@ -3,6 +3,7 @@ package angolodelleidee.catalogovirtuale;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
@@ -20,14 +21,19 @@ import android.widget.ListView;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener ,CategoryFragment.OnInputInteraction {
     private ListView listCategorie;
+    private Carrello carrello;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
+        this.carrello = Carrello.getInstance(new ClienteImpl());
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+        CategoryFragment fragment = CategoryFragment.newInstance();
+        addFragment(fragment,false);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -88,15 +94,33 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
             if (id == R.id.nav_scelta_articolo) {
-                FragmentManager manager = getSupportFragmentManager();
-                FragmentTransaction transaction = manager.beginTransaction();
+
                 CategoryFragment fragment = CategoryFragment.newInstance();
-                transaction.add(R.id.main, fragment);
-                transaction.commit();
+                replaceFragment(fragment,false);
                 // Handle the camera action
         } else if (id == R.id.nav_storico) {
 
         } else if (id == R.id.nav_carrello) {
+                FragmentManager manager = getSupportFragmentManager();
+
+                if (manager.getBackStackEntryCount() > 0) {
+                    manager.popBackStackImmediate();
+                }
+
+                Fragment fragment = manager.findFragmentById(R.id.main);
+                FragmentTransaction transaction = manager.beginTransaction();
+                if (fragment != null && fragment instanceof CarrelloFragment) {
+                    ((CarrelloFragment) fragment).updateCarrello();
+                    transaction.replace(R.id.main, fragment);
+                }else{
+                    CarrelloFragment carrelloFragment = CarrelloFragment.newInstance(this.carrello);
+                    transaction.replace(R.id.main, carrelloFragment);
+
+                }
+                transaction.addToBackStack(null);
+                transaction.commit();
+
+            System.out.println(this.carrello.getArticoli());
 
         }  else if (id == R.id.nav_contatti) {
 
@@ -110,11 +134,30 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onButtonClick(String category) {
         System.out.println(category);
-        ProductFragment fragment = ProductFragment.newInstance(category);
+        ProductFragment fragment = ProductFragment.newInstance(category,this.carrello);
+        replaceFragment(fragment,true);
+    }
+
+
+    protected void addFragment(Fragment fragment, boolean back) {
+
+        FragmentManager manager = getSupportFragmentManager();
+        FragmentTransaction transaction = manager.beginTransaction();
+        transaction.add(R.id.main, fragment);
+            if (back) {
+                transaction.addToBackStack(null);
+            }
+            transaction.commit();
+
+    }
+
+    protected void replaceFragment(Fragment fragment, boolean back) {
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
         transaction.replace(R.id.main, fragment);
-        transaction.addToBackStack(null);
+        if (back) {
+            transaction.addToBackStack(null);
+        }
         transaction.commit();
     }
 }
