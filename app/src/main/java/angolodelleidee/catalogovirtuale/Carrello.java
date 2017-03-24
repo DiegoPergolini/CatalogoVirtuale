@@ -44,7 +44,15 @@ public class Carrello {
             this.carrello.get(categoria).add(new ProdottoImpl(categoria,codice));
         }
     }
-
+    public List<Prodotto> getProducts(){
+        final List<Prodotto> toReturn = new LinkedList<>();
+        for(List<Prodotto> list:  this.carrello.values()){
+            for(Prodotto p : list){
+                toReturn.add(p);
+            }
+        }
+        return toReturn;
+    }
     @Override
     public String toString() {
         return "Carrello{" +
