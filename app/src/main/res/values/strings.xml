@@ -5,4 +5,6 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
+    <string name="scegli_la_quantit_desiderata">Scegli la quantità desiderata</string>
+    <string name="aggiungi">Aggiungi</string>
 </resources>

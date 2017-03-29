@@ -1,17 +1,23 @@
 package angolodelleidee.catalogovirtuale;
 
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ListView;
+import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * Created by diego on 15/03/2017.
@@ -23,6 +29,7 @@ public class ProductFragment extends Fragment {
     private static Carrello carrello;
     private String name;
     private Product product;
+    private int lastTouched = -1;
     public static ProductFragment newInstance(String name,Carrello carrelloPassato) {
         ProductFragment fragment = new ProductFragment();
         Bundle bundle = new Bundle();
@@ -58,16 +65,66 @@ public class ProductFragment extends Fragment {
 
         //L'adapter appena creato viene passato alla ListView tramite il metodo apposito
         lsvStates.setAdapter(statesAdapter);
+        lsvStates.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, final View view, int position, long id) {
+                setDialog((String) parent.getItemAtPosition(position));
+                return true;
+            }
+        });
         lsvStates.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                System.out.println(carrello == null);
-                carrello.addProdotto(product,(String) parent.getItemAtPosition(position));
+                if(lastTouched == position){
+                    carrello.addProdotto(product,(String) parent.getItemAtPosition(position));
+                    lastTouched = -1;
+                    Toast.makeText(getContext(),"Prodotto aggiunto al carrello",Toast.LENGTH_SHORT).show();
+                }else {
+                    lastTouched = position;
+                }
+
             }
         });
         System.out.println(name);
         return view;
     }
+
+    private void setDialog(final String idProduct) {
+        final Dialog d = new Dialog(getContext());
+        d.setContentView(R.layout.custom);
+        d.setTitle("Scelta quantità");
+        Button alertButton = (Button) d.findViewById(R.id.button2);
+        final SeekBar bar = (SeekBar) d.findViewById(R.id.seekBar);
+        bar.setMax(10);
+        final TextView viewValue = (TextView) d.findViewById(R.id.textView3);
+        bar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                viewValue.setText(String.valueOf(i));
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+        alertButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                for(int i = 0;i< bar.getProgress();i++){
+                    carrello.addProdotto(product,idProduct);
+                }
+                d.dismiss();
+            }
+        });
+        d.show();
+    }
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
