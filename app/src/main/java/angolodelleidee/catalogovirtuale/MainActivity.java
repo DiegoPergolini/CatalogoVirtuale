@@ -1,5 +1,6 @@
 package angolodelleidee.catalogovirtuale;
 
+import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -45,7 +46,7 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.activity_main);
         this.carrello = Carrello.getInstance(new ClienteImpl());
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -58,6 +59,28 @@ public class MainActivity extends AppCompatActivity
             public void onClick(View view) {
                 Snackbar.make(view, "Carrello", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
+
+
+                FragmentManager manager = getSupportFragmentManager();
+
+                if (manager.getBackStackEntryCount() > 0) {
+                    manager.popBackStackImmediate();
+                }
+
+                Fragment fragment = manager.findFragmentById(R.id.main);
+                FragmentTransaction transaction = manager.beginTransaction();
+                if (fragment != null && fragment instanceof CarrelloFragment) {
+                    ((CarrelloFragment) fragment).updateCarrello();
+                    transaction.replace(R.id.main, fragment);
+                }else{
+                    CarrelloFragment carrelloFragment = CarrelloFragment.newInstance(carrello);
+                    transaction.replace(R.id.main, carrelloFragment);
+
+                }
+                transaction.addToBackStack(null);
+                transaction.commit();
+
+
             }
         });
 

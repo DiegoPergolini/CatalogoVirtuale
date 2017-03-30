@@ -110,7 +110,7 @@ public class CarrelloFragment extends Fragment {
         private static final String JSON_MESSAGE1 = "Quantita";
         private static final String JSON_DATA = "data";
 
-        private static final String SUCCESS_URL = "http://localhost/adi_cv/saveOrder.php";
+        private static final String SUCCESS_URL = "http://192.168.0.16/adi_cv/saveOrder.php";
 
 
         @Override
