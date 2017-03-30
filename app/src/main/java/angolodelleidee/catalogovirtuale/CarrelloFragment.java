@@ -110,7 +110,7 @@ public class CarrelloFragment extends Fragment {
         private static final String JSON_MESSAGE1 = "Quantita";
         private static final String JSON_DATA = "data";
 
-        private static final String SUCCESS_URL = "http://192.168.0.16/adi_cv/saveOrder.php";
+        private static final String SUCCESS_URL = "http://192.168.1.118/adi_cv/saveOrder.php";
 
 
         @Override
@@ -126,7 +126,7 @@ public class CarrelloFragment extends Fragment {
 
                 JSONObject jsonObject = new JSONObject();
                 JSONArray jsonArray = new JSONArray();
-                jsonObject.put("Cliente",1);
+                jsonObject.put("Cliente",carrello.getId());
                 jsonObject.put("Array",jsonArray);
 
                 for (Prodotto p: params[0]){

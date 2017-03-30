@@ -5,4 +5,6 @@ package angolodelleidee.catalogovirtuale;
  */
 
 public interface Cliente {
+    String getEmail();
+    String getPassword();
 }

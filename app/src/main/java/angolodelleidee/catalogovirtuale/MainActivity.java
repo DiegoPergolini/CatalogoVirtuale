@@ -1,5 +1,6 @@
 package angolodelleidee.catalogovirtuale;
 
+import android.app.Dialog;
 import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -38,7 +39,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener ,CategoryFragment.OnInputInteraction {
+        implements NavigationView.OnNavigationItemSelectedListener ,CategoryFragment.OnInputInteraction ,LoginFragment.LoginListener{
     private ListView listCategorie;
     private Carrello carrello;
 
@@ -48,10 +49,11 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.activity_main);
-        this.carrello = Carrello.getInstance(new ClienteImpl());
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        CategoryFragment fragment = CategoryFragment.newInstance();
+        LoginFragment fragment = LoginFragment.newInstance();
+       // CategoryFragment fragment = CategoryFragment.newInstance();
         addFragment(fragment,false);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -203,6 +205,15 @@ public class MainActivity extends AppCompatActivity
     }
 
 
+    @Override
+    public void onSuccessfulLogin(String id) {
+        this.carrello = Carrello.getInstance(id);
+        CategoryFragment fragment = CategoryFragment.newInstance();
+        replaceFragment(fragment,false);
+    }
 
+    @Override
+    public void onUnsuccessfulLogin() {
 
+    }
 }

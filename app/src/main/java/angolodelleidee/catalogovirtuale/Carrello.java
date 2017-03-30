@@ -12,18 +12,18 @@ import java.util.List;
 public class Carrello {
     private final EnumMap<Product,List<Prodotto>> carrello = new EnumMap<Product, List<Prodotto>>(Product.class);
     private static Carrello INSTANCE = null ;
-    private final Cliente cliente;
-    private Carrello(Cliente cliente){
-        this.cliente = cliente;
+    private final String id;
+    private Carrello(String idCliente){
+        this.id = idCliente;
         for( Product p : Product.values()){
             this.carrello.put(p,new LinkedList<Prodotto>());
         }
     }
-    public static Carrello getInstance(Cliente cliente){
+    public static Carrello getInstance(String idCliente){
         if(Carrello.INSTANCE == null){
             synchronized (Carrello.class){
                 if(Carrello.INSTANCE == null){
-                    Carrello.INSTANCE =  new Carrello(cliente);
+                    Carrello.INSTANCE =  new Carrello(idCliente);
                 }
             }
         }
@@ -75,5 +75,9 @@ public class Carrello {
             }
         }
         return toReturn;
+    }
+
+    public String getId() {
+        return id;
     }
 }

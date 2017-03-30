@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <EditText
+        android:id="@+id/edtMail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="109dp"
+        android:ems="15"
+        android:hint="E-Mail"
+        android:inputType="textEmailAddress" />
+
+    <EditText
+        android:id="@+id/edtPw"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/edtMail"
+        android:layout_alignStart="@+id/edtMail"
+        android:layout_below="@+id/edtMail"
+        android:layout_marginTop="17dp"
+        android:ems="15"
+        android:hint="Password"
+        android:inputType="textPassword" />
+
+    <CheckBox
+        android:id="@+id/checkBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/edtPw"
+        android:layout_alignStart="@+id/edtPw"
+        android:layout_centerVertical="true"
+        android:text="Mantieni l'accesso" />
+
+    <TextView
+        android:id="@+id/txv_login"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="45dp"
+        android:text="Angolo delle Idee"
+        android:textAppearance="@android:style/TextAppearance.Material.Title"
+        android:textSize="30sp" />
+
+    <Button
+        android:id="@+id/btnLogin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/checkBox"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="61dp"
+        android:text="Effettua l'accesso" />
+
+</RelativeLayout>
