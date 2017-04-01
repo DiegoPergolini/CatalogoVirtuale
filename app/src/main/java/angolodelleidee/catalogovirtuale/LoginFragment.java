@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 
 import java.io.BufferedReader;
@@ -35,10 +36,15 @@ public class LoginFragment extends Fragment {
     private EditText emailField ;
     private EditText pwField ;
     private Button loginButton;
+    private CheckBox checkBox;
     private  LoginListener listener;
 
+    private enum Result{
+        LOGGED,NOT_LOGGED;
+    }
+
     public interface LoginListener{
-        void onSuccessfulLogin(String id);
+        void onSuccessfulLogin(String id,boolean toRemember);
         void onUnsuccessfulLogin();
     }
 
@@ -65,6 +71,7 @@ public class LoginFragment extends Fragment {
         final View view = inflater.inflate(R.layout.login_layout,container,false);
         this.emailField =(EditText) view.findViewById(R.id.edtMail);
         this.pwField =(EditText) view.findViewById(R.id.edtPw);
+        this.checkBox = (CheckBox) view.findViewById(R.id.checkBox);
         this.loginButton =(Button) view.findViewById(R.id.btnLogin);
         this.loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -75,7 +82,7 @@ public class LoginFragment extends Fragment {
         return view;
     }
 
-    public class LoginTask extends AsyncTask<Cliente,Void,Void> {
+    public class LoginTask extends AsyncTask<Cliente,Void,Result> {
         private String getPostDataString(HashMap<String,String > params) throws UnsupportedEncodingException {
             StringBuilder result = new StringBuilder();
             boolean first = true;
@@ -95,13 +102,22 @@ public class LoginFragment extends Fragment {
         //Nome dei parametri del json di risposta
 
         private static final String SUCCESS_URL = "http://192.168.1.118/adi_cv/login.php";
-
+        Result toReturn ;
         HttpURLConnection httpURLConnection = null;
         StringBuilder response = new StringBuilder();
         BufferedReader rd = null;
 
         @Override
-        protected Void doInBackground(Cliente... params) {
+        protected void onPostExecute(Result result) {
+            if(result.equals(Result.LOGGED)){
+                listener.onSuccessfulLogin(response.toString(),checkBox.isChecked());
+            }else{
+                listener.onUnsuccessfulLogin();
+            }
+        }
+
+        @Override
+        protected Result doInBackground(Cliente... params) {
             try {
                 URL url = new URL(SUCCESS_URL); //Enter URL here
 
@@ -131,10 +147,10 @@ public class LoginFragment extends Fragment {
                     }
                 }
                 if(response.toString().isEmpty()){
-//                    listener.onUnsuccessfulLogin();
+                    toReturn = Result.NOT_LOGGED;
                     Log.d("risposta","Credenziali errate");
                 }else{
-                    listener.onSuccessfulLogin(response.toString());
+                    toReturn = Result.LOGGED;
                     Log.d("risposta",response.toString());
                 }
 
@@ -155,7 +171,7 @@ public class LoginFragment extends Fragment {
                 }
             }
 
-            return null;
+            return toReturn;
         }
     }
 

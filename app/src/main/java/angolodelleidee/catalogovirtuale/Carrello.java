@@ -80,4 +80,9 @@ public class Carrello {
     public String getId() {
         return id;
     }
+    public void emptyCart(){
+        for( Product p : Product.values()){
+            this.carrello.put(p,new LinkedList<Prodotto>());
+        }
+    }
 }

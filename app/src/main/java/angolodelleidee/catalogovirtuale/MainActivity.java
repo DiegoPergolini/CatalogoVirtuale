@@ -1,8 +1,10 @@
 package angolodelleidee.catalogovirtuale;
 
 import android.app.Dialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -10,7 +12,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -20,28 +21,22 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 
+import angolodelleidee.catalogovirtuale.database.ExerciseDbManager;
+
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener ,CategoryFragment.OnInputInteraction ,LoginFragment.LoginListener{
+        implements NavigationView.OnNavigationItemSelectedListener ,CategoryFragment.OnInputInteraction ,LoginFragment.LoginListener, CarrelloFragment.CartListener{
     private ListView listCategorie;
     private Carrello carrello;
+    private static final String EXAMPLE_SHARED = "catalogo_virtuale";
+
+    private static final String USERNAME_KEY = "username";
+    private static final String ORDER_NUMBER = "order_number";
+    private static final int START_NUMBER = 1;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,9 +47,20 @@ public class MainActivity extends AppCompatActivity
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        LoginFragment fragment = LoginFragment.newInstance();
-       // CategoryFragment fragment = CategoryFragment.newInstance();
-        addFragment(fragment,false);
+        if(getText(MainActivity.this,MainActivity.USERNAME_KEY).isEmpty()){
+            LoginFragment fragment = LoginFragment.newInstance();
+            addFragment(fragment,false);
+        }else {
+            this.carrello = Carrello.getInstance(getText(MainActivity.this,MainActivity.USERNAME_KEY));
+            CategoryFragment fragment = CategoryFragment.newInstance();
+            ExerciseDbManager dbManager = new ExerciseDbManager(MainActivity.this);
+            final List<ProdottoImpl> productList = dbManager.getProductsInCart();
+            for (ProdottoImpl p : productList){
+                this.carrello.addProdotto(p.getCategoria(),p.getCodice());
+            }
+
+            addFragment(fragment,false);
+        }
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -113,6 +119,12 @@ public class MainActivity extends AppCompatActivity
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
     }
 
     @Override
@@ -206,14 +218,59 @@ public class MainActivity extends AppCompatActivity
 
 
     @Override
-    public void onSuccessfulLogin(String id) {
+    public void onSuccessfulLogin(String id,boolean toRemember) {
         this.carrello = Carrello.getInstance(id);
+        if(toRemember){
+            setText(MainActivity.this, USERNAME_KEY,id);
+        }
         CategoryFragment fragment = CategoryFragment.newInstance();
         replaceFragment(fragment,false);
     }
 
     @Override
     public void onUnsuccessfulLogin() {
+        DialogInterface.OnClickListener listener  = null;
+        final  Dialog d = new AlertDialog.Builder(MainActivity.this).setTitle("Accesso non effettuato!").setMessage("Credenziali errate").setNeutralButton("Ok",listener).create();
+        listener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                d.dismiss();
+            }
+        };
+        d.show();
+    }
 
+    private SharedPreferences getSharedPreferences(Context context) {
+        return getSharedPreferences(EXAMPLE_SHARED, Context.MODE_PRIVATE);
+    }
+    private void setText(Context context, String key, String text) {
+        getSharedPreferences(context).edit().putString(key, text).apply();
+    }
+
+    /**
+     * Metodo per leggere una stringa dalle SharedPreferences.
+     *
+     * @param context riferimento al contesto
+     * @param key chiave utilizzata in fase di scrittura
+     * @return valore salvato, o se non presente, valore di default
+     */
+    private String getText(Context context, String key) {
+        return getSharedPreferences(context).getString(key, "");
+    }
+
+    @Override
+    public void orderSended() {
+        ExerciseDbManager dbManager = new ExerciseDbManager(MainActivity.this);
+       for(ProdottoImpl p : dbManager.getProductsInCart()){
+           dbManager.deleteProduct(p);
+       }
+        this.carrello.emptyCart();
+        /*
+        final String orderNumber = getText(MainActivity.this,MainActivity.ORDER_NUMBER);
+        if(orderNumber.isEmpty()){
+            setText(MainActivity.this,MainActivity.ORDER_NUMBER,String.valueOf(MainActivity.START_NUMBER));
+        }else{
+            setText(MainActivity.this,MainActivity.ORDER_NUMBER,String.valueOf(Integer.parseInt(orderNumber)+1));
+        }*/
     }
 }

@@ -19,6 +19,12 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
+import angolodelleidee.catalogovirtuale.database.ExerciseDbManager;
+
 /**
  * Created by diego on 15/03/2017.
  */
@@ -30,6 +36,7 @@ public class ProductFragment extends Fragment {
     private String name;
     private Product product;
     private int lastTouched = -1;
+    ExerciseDbManager dbManager;
     public static ProductFragment newInstance(String name,Carrello carrelloPassato) {
         ProductFragment fragment = new ProductFragment();
         Bundle bundle = new Bundle();
@@ -77,6 +84,8 @@ public class ProductFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if(lastTouched == position){
                     carrello.addProdotto(product,(String) parent.getItemAtPosition(position));
+
+                    dbManager.addProduct(new ProdottoImpl((product),(String) parent.getItemAtPosition(position)));
                     lastTouched = -1;
                     Toast.makeText(getContext(),"Prodotto aggiunto al carrello",Toast.LENGTH_SHORT).show();
                 }else {
@@ -86,6 +95,7 @@ public class ProductFragment extends Fragment {
             }
         });
         System.out.println(name);
+        dbManager = new ExerciseDbManager(getActivity());
         return view;
     }
 
@@ -118,6 +128,7 @@ public class ProductFragment extends Fragment {
             public void onClick(View view) {
                 for(int i = 0;i< bar.getProgress();i++){
                     carrello.addProdotto(product,idProduct);
+                    dbManager.addProduct(new ProdottoImpl(product,idProduct));
                 }
                 d.dismiss();
             }

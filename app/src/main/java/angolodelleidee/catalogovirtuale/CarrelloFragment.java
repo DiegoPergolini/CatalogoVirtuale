@@ -1,5 +1,6 @@
 package angolodelleidee.catalogovirtuale;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -39,6 +40,13 @@ public class CarrelloFragment extends Fragment {
     ArrayAdapter<String> statesAdapter;
     Button sendButton;
     private ListView lsvStates;
+    private CartListener listener;
+
+    public interface CartListener{
+        void orderSended();
+    }
+
+
     public static CarrelloFragment newInstance(Carrello carrelloPassato) {
         CarrelloFragment fragment = new CarrelloFragment();
         carrello = carrelloPassato;
@@ -91,6 +99,9 @@ public class CarrelloFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        if (context instanceof CartListener) {
+            listener = (CartListener) context;
+        }
 
     }
 
@@ -100,7 +111,7 @@ public class CarrelloFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-
+        listener = null;
     }
 
 
@@ -112,9 +123,14 @@ public class CarrelloFragment extends Fragment {
 
         private static final String SUCCESS_URL = "http://192.168.1.118/adi_cv/saveOrder.php";
 
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            listener.orderSended();
+        }
 
         @Override
         protected Void doInBackground(List<Prodotto>... params) {
+
             try {
                 URL url = new URL(SUCCESS_URL); //Enter URL here
                 HttpURLConnection httpURLConnection = (HttpURLConnection)url.openConnection();
@@ -159,5 +175,6 @@ public class CarrelloFragment extends Fragment {
             return null;
         }
     }
+
 }
 
