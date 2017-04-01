@@ -156,25 +156,7 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_storico) {
 
         } else if (id == R.id.nav_carrello) {
-                FragmentManager manager = getSupportFragmentManager();
-
-                if (manager.getBackStackEntryCount() > 0) {
-                    manager.popBackStackImmediate();
-                }
-
-                Fragment fragment = manager.findFragmentById(R.id.main);
-                FragmentTransaction transaction = manager.beginTransaction();
-                if (fragment != null && fragment instanceof CarrelloFragment) {
-                    ((CarrelloFragment) fragment).updateCarrello();
-                    transaction.replace(R.id.main, fragment);
-                }else{
-                    CarrelloFragment carrelloFragment = CarrelloFragment.newInstance(this.carrello);
-                    transaction.replace(R.id.main, carrelloFragment);
-
-                }
-                transaction.addToBackStack(null);
-                transaction.commit();
-
+                showCartFragment();
             System.out.println(this.carrello.getArticoli());
 
         }  else if (id == R.id.nav_contatti) {
@@ -185,7 +167,26 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+    private void showCartFragment(){
+        FragmentManager manager = getSupportFragmentManager();
 
+        if (manager.getBackStackEntryCount() > 0) {
+            manager.popBackStackImmediate();
+        }
+
+        Fragment fragment = manager.findFragmentById(R.id.main);
+        FragmentTransaction transaction = manager.beginTransaction();
+        if (fragment != null && fragment instanceof CarrelloFragment) {
+            ((CarrelloFragment) fragment).updateCarrello();
+            transaction.replace(R.id.main, fragment);
+        }else{
+            CarrelloFragment carrelloFragment = CarrelloFragment.newInstance(this.carrello);
+            transaction.replace(R.id.main, carrelloFragment);
+
+        }
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
     @Override
     public void onButtonClick(String category) {
         System.out.println(category);
@@ -265,6 +266,7 @@ public class MainActivity extends AppCompatActivity
            dbManager.deleteProduct(p);
        }
         this.carrello.emptyCart();
+        showCartFragment();
         /*
         final String orderNumber = getText(MainActivity.this,MainActivity.ORDER_NUMBER);
         if(orderNumber.isEmpty()){
