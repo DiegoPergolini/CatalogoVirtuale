@@ -83,9 +83,9 @@ public class ProductFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if(lastTouched == position){
-                    carrello.addProdotto(product,(String) parent.getItemAtPosition(position));
-
-                    dbManager.addProduct(new ProdottoImpl((product),(String) parent.getItemAtPosition(position)));
+                    final ProdottoImpl prodotto = new ProdottoImpl(product,(String) parent.getItemAtPosition(position));
+                    carrello.addProdotto(product,prodotto);
+                    dbManager.addProduct(prodotto);
                     lastTouched = -1;
                     Toast.makeText(getContext(),"Prodotto aggiunto al carrello",Toast.LENGTH_SHORT).show();
                 }else {
@@ -126,10 +126,10 @@ public class ProductFragment extends Fragment {
         alertButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                for(int i = 0;i< bar.getProgress();i++){
-                    carrello.addProdotto(product,idProduct);
-                    dbManager.addProduct(new ProdottoImpl(product,idProduct));
-                }
+                final ProdottoImpl prodotto = new ProdottoImpl(product,idProduct);
+                prodotto.aumentaQuantita(bar.getProgress()-1);
+                carrello.addProdotto(product,prodotto);
+                dbManager.addProduct(prodotto);
                 d.dismiss();
             }
         });

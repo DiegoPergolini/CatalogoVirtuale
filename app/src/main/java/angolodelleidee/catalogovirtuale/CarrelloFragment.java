@@ -121,7 +121,6 @@ public class CarrelloFragment extends Fragment {
         private static final String JSON_MESSAGE1 = "Quantita";
         private static final String JSON_DATA = "data";
 
-        private static final String SUCCESS_URL = "http://192.168.1.118/adi_cv/saveOrder.php";
 
         @Override
         protected void onPostExecute(Void aVoid) {
@@ -132,7 +131,7 @@ public class CarrelloFragment extends Fragment {
         protected Void doInBackground(List<Prodotto>... params) {
 
             try {
-                URL url = new URL(SUCCESS_URL); //Enter URL here
+                URL url = new URL(Resource.BASE_URL+Resource.SEND_ORDER_PAGE); //Enter URL here
                 HttpURLConnection httpURLConnection = (HttpURLConnection)url.openConnection();
                 httpURLConnection.setDoOutput(true);
                 httpURLConnection.setDoInput(true);

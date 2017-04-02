@@ -3,6 +3,7 @@ package angolodelleidee.catalogovirtuale.database;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -30,12 +31,18 @@ public class ExerciseDbManager {
 
 
     public boolean addProduct(ProdottoImpl product) {
-        final List<String> productCodes = new LinkedList<>();
+            final List<String> productCodes = new LinkedList<>();
+
             for(ProdottoImpl p : getProductsInCart()){
                 productCodes.add(p.getCodice());
             }
             if(productCodes.contains(product.getCodice())){
-                product.aggiungiUno();
+                for(ProdottoImpl p : getProductsInCart()){
+                    if(p.getCodice().equals(product.getCodice())){
+                        product.aumentaQuantita(p.getQuantita());
+                    }
+                }
+                Log.d("Database",product.getCodice()+": "+ product.getQuantita());
                 return updateProduct(product);
             }else {
                 SQLiteDatabase db = dbHelper.getWritableDatabase();

@@ -101,7 +101,7 @@ public class LoginFragment extends Fragment {
 
         //Nome dei parametri del json di risposta
 
-        private static final String SUCCESS_URL = "http://192.168.1.118/adi_cv/login.php";
+
         Result toReturn ;
         HttpURLConnection httpURLConnection = null;
         StringBuilder response = new StringBuilder();
@@ -119,7 +119,7 @@ public class LoginFragment extends Fragment {
         @Override
         protected Result doInBackground(Cliente... params) {
             try {
-                URL url = new URL(SUCCESS_URL); //Enter URL here
+                URL url = new URL(Resource.BASE_URL+Resource.LOGIN_PAGE); //Enter URL here
 
                 httpURLConnection = (HttpURLConnection)url.openConnection();
                 httpURLConnection.setUseCaches(false);

@@ -29,6 +29,22 @@ public class Carrello {
         }
         return Carrello.INSTANCE;
     }
+    public void addProdotto(Product categoria,Prodotto prodotto){
+        final List<String> productCodes = new LinkedList<>();
+        for(Prodotto p : this.carrello.get(categoria)){
+            productCodes.add(p.getCodice());
+        }
+        if(productCodes.contains(prodotto.getCodice())){
+            for(Prodotto p : this.carrello.get(categoria)){
+                if(p.getCodice().equals(prodotto.getCodice())){
+                    p.aumentaQuantita(prodotto.getQuantita());
+                }
+            }
+        }else {
+            this.carrello.get(categoria).add(prodotto);
+        }
+    }
+    /*
     public void addProdotto(Product categoria,String codice){
         if(this.carrello.get(categoria).contains(new ProdottoImpl(categoria,codice))){
             System.out.println("Gia contenuto");
@@ -44,6 +60,7 @@ public class Carrello {
             this.carrello.get(categoria).add(new ProdottoImpl(categoria,codice));
         }
     }
+*/
     public List<Prodotto> getProducts(){
         final List<Prodotto> toReturn = new LinkedList<>();
         for(List<Prodotto> list:  this.carrello.values()){

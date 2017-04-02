@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity
             ExerciseDbManager dbManager = new ExerciseDbManager(MainActivity.this);
             final List<ProdottoImpl> productList = dbManager.getProductsInCart();
             for (ProdottoImpl p : productList){
-                this.carrello.addProdotto(p.getCategoria(),p.getCodice());
+                this.carrello.addProdotto(p.getCategoria(),p);
             }
 
             addFragment(fragment,false);
@@ -223,6 +223,11 @@ public class MainActivity extends AppCompatActivity
         this.carrello = Carrello.getInstance(id);
         if(toRemember){
             setText(MainActivity.this, USERNAME_KEY,id);
+        }
+        ExerciseDbManager dbManager = new ExerciseDbManager(MainActivity.this);
+        final List<ProdottoImpl> productList = dbManager.getProductsInCart();
+        for (ProdottoImpl p : productList){
+            this.carrello.addProdotto(p.getCategoria(),p);
         }
         CategoryFragment fragment = CategoryFragment.newInstance();
         replaceFragment(fragment,false);
