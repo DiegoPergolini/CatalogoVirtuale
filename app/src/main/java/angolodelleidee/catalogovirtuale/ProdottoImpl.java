@@ -29,7 +29,7 @@ public class ProdottoImpl implements Prodotto {
         this.categoria =  this.getProductFromCode(this.codice);
     }
 
-    private Product getProductFromCode(String id){
+    public static Product getProductFromCode(String id){
         final String code = id.substring(0,3);
         Product toReturn = null;
         for (Product p : Product.values()){

@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity
     private ListView listCategorie;
     private Carrello carrello;
     private static final String EXAMPLE_SHARED = "catalogo_virtuale";
-
+    ExerciseDbManager dbManager ;
     private static final String USERNAME_KEY = "username";
     private static final String ORDER_NUMBER = "order_number";
     private static final int START_NUMBER = 1;
@@ -51,9 +51,9 @@ public class MainActivity extends AppCompatActivity
             LoginFragment fragment = LoginFragment.newInstance();
             addFragment(fragment,false);
         }else {
-            this.carrello = Carrello.getInstance(getText(MainActivity.this,MainActivity.USERNAME_KEY));
+            dbManager = new ExerciseDbManager(MainActivity.this);
+            this.carrello = Carrello.getInstance(getText(MainActivity.this,MainActivity.USERNAME_KEY),dbManager);
             CategoryFragment fragment = CategoryFragment.newInstance();
-            ExerciseDbManager dbManager = new ExerciseDbManager(MainActivity.this);
             final List<ProdottoImpl> productList = dbManager.getProductsInCart();
             for (ProdottoImpl p : productList){
                 this.carrello.addProdotto(p.getCategoria(),p);
@@ -220,11 +220,10 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onSuccessfulLogin(String id,boolean toRemember) {
-        this.carrello = Carrello.getInstance(id);
+        this.carrello = Carrello.getInstance(id,dbManager);
         if(toRemember){
             setText(MainActivity.this, USERNAME_KEY,id);
         }
-        ExerciseDbManager dbManager = new ExerciseDbManager(MainActivity.this);
         final List<ProdottoImpl> productList = dbManager.getProductsInCart();
         for (ProdottoImpl p : productList){
             this.carrello.addProdotto(p.getCategoria(),p);
@@ -266,7 +265,6 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void orderSended() {
-        ExerciseDbManager dbManager = new ExerciseDbManager(MainActivity.this);
        for(ProdottoImpl p : dbManager.getProductsInCart()){
            dbManager.deleteProduct(p);
        }
@@ -279,5 +277,10 @@ public class MainActivity extends AppCompatActivity
         }else{
             setText(MainActivity.this,MainActivity.ORDER_NUMBER,String.valueOf(Integer.parseInt(orderNumber)+1));
         }*/
+    }
+
+    @Override
+    public void deleteSomeItem() {
+        showCartFragment();
     }
 }

@@ -3,13 +3,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
-    android:weightSum="1">
-
+    android:weightSum="1"
+    android:id="@+id/list_item_cart">
     <TextView
-        android:id="@+id/txv_state"
+        android:id="@+id/txv_state_1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="16dp"
-        android:textSize="22sp" />
+        android:textSize="22sp"
+        android:layout_weight="0.96" />
+
+    <CheckBox
+        android:id="@+id/checkBoxCart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
 </LinearLayout>

@@ -2,20 +2,28 @@ package angolodelleidee.catalogovirtuale;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -36,6 +44,7 @@ import java.util.List;
  */
 
 public class CarrelloFragment extends Fragment {
+    boolean areAllChecked = false;
     private static Carrello carrello;
     ArrayAdapter<String> statesAdapter;
     Button sendButton;
@@ -44,8 +53,13 @@ public class CarrelloFragment extends Fragment {
 
     public interface CartListener{
         void orderSended();
+        void deleteSomeItem();
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.cart_toolbar, menu);
+    }
 
     public static CarrelloFragment newInstance(Carrello carrelloPassato) {
         CarrelloFragment fragment = new CarrelloFragment();
@@ -63,7 +77,17 @@ public class CarrelloFragment extends Fragment {
         this.sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new CartSender().execute(carrello.getProducts());
+                if(statesAdapter.isEmpty()){
+                    new AlertDialog.Builder(getContext()).setTitle("Il carrello è vuoto!").setMessage("Aggiungere articoli al carrello per inviare un ordine").setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    }).create().show();
+                }else{
+                    new CartSender().execute(carrello.getProducts());
+                }
+
             }
         });
         /**
@@ -72,7 +96,7 @@ public class CarrelloFragment extends Fragment {
          * del suddetto layout che si occuperà della presentazione della stringa, e la collezzione di stringhe da presentare.
          */
 
-       statesAdapter = new ArrayAdapter<>(getActivity(), R.layout.list_item_states, R.id.txv_state, carrello.getArticoli());
+       statesAdapter = new ArrayAdapter<>(getActivity(), R.layout.list_item_cart, R.id.txv_state_1, carrello.getArticoli());
 
         //L'adapter appena creato viene passato alla ListView tramite il metodo apposito
         lsvStates.setAdapter(statesAdapter);
@@ -94,6 +118,75 @@ public class CarrelloFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+    private void checkAll(boolean value){
+        for(int i = 0; i< statesAdapter.getCount();i++){
+            final View temp = getViewByPosition(i,lsvStates);
+            final CheckBox box = (CheckBox) temp.findViewById(R.id.checkBoxCart);
+            box.setChecked(value);
+        }
+    }
+    private void deleteSelected(){
+        for(int i = 0; i< statesAdapter.getCount();i++){
+            final View temp = getViewByPosition(i,lsvStates);
+            final CheckBox box = (CheckBox) temp.findViewById(R.id.checkBoxCart);
+            if(box.isChecked()){
+                String item = statesAdapter.getItem(i);
+                final int indexVirgola = item.indexOf(",");
+
+                Log.d("PROVA",item.substring(8,indexVirgola-1));
+                carrello.removeProduct(item.substring(8,indexVirgola-1));
+            }
+        }
+        listener.deleteSomeItem();
+    }
+    private int getCountCheckedItem(){
+        int count = 0;
+        for(int i = 0; i< statesAdapter.getCount();i++){
+            final View temp = getViewByPosition(i,lsvStates);
+            final CheckBox box = (CheckBox) temp.findViewById(R.id.checkBoxCart);
+            if(box.isChecked()){
+                count++;
+            }
+        }
+        return count;
+    }
+
+    public View getViewByPosition(int pos, ListView listView) {
+        final int firstListItemPosition = listView.getFirstVisiblePosition();
+        final int lastListItemPosition = firstListItemPosition + listView.getChildCount() - 1;
+
+        if (pos < firstListItemPosition || pos > lastListItemPosition ) {
+            return listView.getAdapter().getView(pos, null, listView);
+        } else {
+            final int childIndex = pos - firstListItemPosition;
+            return listView.getChildAt(childIndex);
+        }
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.action_select:
+                    checkAll(!areAllChecked);
+                    areAllChecked=!areAllChecked;
+                break;
+            case R.id.action_delete:
+                    if(getCountCheckedItem()>0){
+                        deleteSelected();
+                    }else {
+                        new AlertDialog.Builder(getContext()).setTitle("Impossibile cancellare").setMessage("Nessun articolo selezionato!").setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        }).create().show();
+                    }
+                break;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+        return true;
     }
 
     @Override

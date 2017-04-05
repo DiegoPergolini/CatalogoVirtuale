@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
+import angolodelleidee.catalogovirtuale.database.ExerciseDbManager;
+
 /**
  * Created by diego on 18/03/2017.
  */
@@ -13,17 +15,19 @@ public class Carrello {
     private final EnumMap<Product,List<Prodotto>> carrello = new EnumMap<Product, List<Prodotto>>(Product.class);
     private static Carrello INSTANCE = null ;
     private final String id;
-    private Carrello(String idCliente){
+    private final ExerciseDbManager exerciseDbManager;
+    private Carrello(String idCliente,ExerciseDbManager dbManager){
         this.id = idCliente;
         for( Product p : Product.values()){
             this.carrello.put(p,new LinkedList<Prodotto>());
         }
+        this.exerciseDbManager = dbManager;
     }
-    public static Carrello getInstance(String idCliente){
+    public static Carrello getInstance(String idCliente, ExerciseDbManager dbManager){
         if(Carrello.INSTANCE == null){
             synchronized (Carrello.class){
                 if(Carrello.INSTANCE == null){
-                    Carrello.INSTANCE =  new Carrello(idCliente);
+                    Carrello.INSTANCE =  new Carrello(idCliente,dbManager);
                 }
             }
         }
@@ -43,6 +47,20 @@ public class Carrello {
         }else {
             this.carrello.get(categoria).add(prodotto);
         }
+    }
+
+    public boolean removeProduct(String id){
+        final List<Prodotto> toRemoveList = new LinkedList<>();
+        final Product toRemove = ProdottoImpl.getProductFromCode(id);
+        for (int i = 0; i< carrello.get(toRemove).size();i++){
+            final Prodotto p = carrello.get(toRemove).get(i);
+            if(p.getCodice().equals(id)){
+                carrello.get(toRemove).remove(p);
+                this.exerciseDbManager.deleteProduct(new ProdottoImpl(p.getCategoria(),p.getCodice()));
+                return true;
+            }
+        }
+        return false;
     }
     /*
     public void addProdotto(Product categoria,String codice){
