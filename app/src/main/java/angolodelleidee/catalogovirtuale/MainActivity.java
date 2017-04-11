@@ -47,11 +47,12 @@ public class MainActivity extends AppCompatActivity
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        dbManager = new ExerciseDbManager(MainActivity.this);
         if(getText(MainActivity.this,MainActivity.USERNAME_KEY).isEmpty()){
             LoginFragment fragment = LoginFragment.newInstance();
             addFragment(fragment,false);
         }else {
-            dbManager = new ExerciseDbManager(MainActivity.this);
+
             this.carrello = Carrello.getInstance(getText(MainActivity.this,MainActivity.USERNAME_KEY),dbManager);
             CategoryFragment fragment = CategoryFragment.newInstance();
             final List<ProdottoImpl> productList = dbManager.getProductsInCart();
@@ -67,28 +68,7 @@ public class MainActivity extends AppCompatActivity
             public void onClick(View view) {
                 Snackbar.make(view, "Carrello", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
-
-
-                FragmentManager manager = getSupportFragmentManager();
-
-                if (manager.getBackStackEntryCount() > 0) {
-                    manager.popBackStackImmediate();
-                }
-
-                Fragment fragment = manager.findFragmentById(R.id.main);
-                FragmentTransaction transaction = manager.beginTransaction();
-                if (fragment != null && fragment instanceof CarrelloFragment) {
-                    ((CarrelloFragment) fragment).updateCarrello();
-                    transaction.replace(R.id.main, fragment);
-                }else{
-                    CarrelloFragment carrelloFragment = CarrelloFragment.newInstance(carrello);
-                    transaction.replace(R.id.main, carrelloFragment);
-
-                }
-                transaction.addToBackStack(null);
-                transaction.commit();
-
-
+                showCartFragment();
             }
         });
 
@@ -176,6 +156,7 @@ public class MainActivity extends AppCompatActivity
 
         Fragment fragment = manager.findFragmentById(R.id.main);
         FragmentTransaction transaction = manager.beginTransaction();
+
         if (fragment != null && fragment instanceof CarrelloFragment) {
             ((CarrelloFragment) fragment).updateCarrello();
             transaction.replace(R.id.main, fragment);

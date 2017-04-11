@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -85,7 +87,23 @@ public class CarrelloFragment extends Fragment {
                         }
                     }).create().show();
                 }else{
-                    new CartSender().execute(carrello.getProducts());
+                    ConnectivityManager connectivityManager = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+                    NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+                    if(networkInfo != null && networkInfo.isConnected()){
+                        new CartSender().execute(carrello.getProducts());
+                    }else {
+                        new AlertDialog.Builder(getActivity())
+                                .setTitle("Errore di connessione")
+                                .setMessage("Connettiti ad una rete Wi-Fi o attiva la connessione dati!")
+                                .setNeutralButton("Ok", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                })
+                                .show();
+                    }
+
                 }
 
             }

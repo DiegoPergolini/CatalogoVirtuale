@@ -4,16 +4,16 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_scelta_articolo"
-            android:icon="@drawable/ic_menu_camera"
-            android:title="Scelta Articoli" />
+            android:icon="@drawable/ic_add_shopping_cart_white_24dp"
+            android:title="@string/scelta_articoli" />
         <item
             android:id="@+id/nav_storico"
-            android:icon="@drawable/ic_menu_gallery"
-            android:title="Storico Ordini" />
+            android:icon="@drawable/ic_history_white_24dp"
+            android:title="@string/storico_ordini" />
         <item
             android:id="@+id/nav_carrello"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="Carrello" />
+            android:icon="@drawable/ic_shopping_cart_white_24dp"
+            android:title="@string/carrello" />
 
     </group>
 
@@ -22,7 +22,7 @@
             <item
                 android:id="@+id/nav_contatti"
                 android:icon="@drawable/ic_menu_share"
-                android:title="Contatti" />
+                android:title="@string/contatti" />
 
         </menu>
     </item>

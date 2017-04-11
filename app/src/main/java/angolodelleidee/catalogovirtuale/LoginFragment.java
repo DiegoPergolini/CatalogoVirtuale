@@ -1,10 +1,14 @@
 package angolodelleidee.catalogovirtuale;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -76,7 +80,24 @@ public class LoginFragment extends Fragment {
         this.loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new LoginTask().execute(new ClienteImpl(emailField.getText().toString(),pwField.getText().toString()));
+                ConnectivityManager connectivityManager = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+                NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+                if(networkInfo != null && networkInfo.isConnected()){
+                    new LoginTask().execute(new ClienteImpl(emailField.getText().toString(),pwField.getText().toString()));
+                }else {
+                    new AlertDialog.Builder(getActivity())
+                            .setTitle("Errore di connessione")
+                            .setMessage("Connettiti ad una rete Wi-Fi o attiva la connessione dati!")
+                            .setNeutralButton("Ok", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            })
+                            .show();
+                }
+
+
             }
         });
         return view;
@@ -122,6 +143,7 @@ public class LoginFragment extends Fragment {
                 URL url = new URL(Resource.BASE_URL+Resource.LOGIN_PAGE); //Enter URL here
 
                 httpURLConnection = (HttpURLConnection)url.openConnection();
+
                 httpURLConnection.setUseCaches(false);
                 httpURLConnection.setDoOutput(true);
                 httpURLConnection.setDoInput(true);
@@ -157,6 +179,21 @@ public class LoginFragment extends Fragment {
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             } catch (IOException e) {
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        new AlertDialog.Builder(getActivity())
+                                        .setTitle("Errore di connessione")
+                                        .setMessage("Controlla che la tua connessione sia attiva")
+                                        .setNeutralButton("Ok", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                dialog.dismiss();
+                                            }
+                                        })
+                                        .show();
+                    }
+                });
                 e.printStackTrace();
             } finally {
                 if( rd != null){

@@ -23,4 +23,8 @@
     </string>
     <string name="remove">Rimuovi selezionati</string>
     <string name="seleziona_tutti">Seleziona/deseleziona tutti</string>
+    <string name="scelta_articoli">Scelta Articoli</string>
+    <string name="storico_ordini">Storico Ordini</string>
+    <string name="carrello">Carrello</string>
+    <string name="contatti">Contatti</string>
 </resources>
