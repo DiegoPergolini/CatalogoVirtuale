@@ -66,13 +66,17 @@ public class ProductListAdapter extends ArrayAdapter<ProductItem> {
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.list_item_states, parent, false);
         }
-        TextView textView = (TextView) convertView.findViewById(R.id.product_text_view);
+        final TextView textView = (TextView) convertView.findViewById(R.id.product_text_view);
         ImageView imageAdd = (ImageView) convertView.findViewById(R.id.add_img);
-        textView.setText(listViewItem.getProduct().getCodice());
+        if(listViewItem.getProduct().getQuantita()==0){
+            textView.setText(listViewItem.getProduct().getCodice());
+        }else {
+            textView.setText(listViewItem.getProduct().getCodice()+", già nel carrello: "+String.valueOf(listViewItem.getProduct().getQuantita()));
+        }
         imageAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ProductItem listViewItem = dataset.get(position);
+                final ProductItem listViewItem = dataset.get(position);
                 final Prodotto productToadd = listViewItem.getProduct();
                 final Dialog d = new Dialog(getContext());
                 d.setContentView(R.layout.custom);
@@ -84,7 +88,7 @@ public class ProductListAdapter extends ArrayAdapter<ProductItem> {
                 viewValue.setClickable(true);
                 viewValue.setEnabled(true);
                 viewValue.setMaxValue(100);
-                viewValue.setMinValue(0);
+                viewValue.setMinValue(1);
 //                bar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 //                    @Override
 //                    public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
@@ -105,9 +109,11 @@ public class ProductListAdapter extends ArrayAdapter<ProductItem> {
                     @Override
                     public void onClick(View view) {
                         final ProdottoImpl prodotto = new ProdottoImpl(productToadd.getCategoria(),productToadd.getCodice());
-                        prodotto.aumentaQuantita(viewValue.getValue()-1);
-                        carrello.addProdotto(productToadd.getCategoria(),prodotto);
+                        prodotto.aumentaQuantita(viewValue.getValue());
+                        Prodotto result =carrello.addProdotto(productToadd.getCategoria(),prodotto);
                         dbManager.addProduct(prodotto);
+                        listViewItem.setProduct(result);
+                        textView.setText(result.getCodice()+", già nel carrello: "+String.valueOf(result.getQuantita()));
                         Toast.makeText(getContext(),"Prodotto aggiunto al carrello",Toast.LENGTH_SHORT).show();
                         d.dismiss();
                     }

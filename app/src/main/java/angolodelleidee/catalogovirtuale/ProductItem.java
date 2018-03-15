@@ -5,7 +5,7 @@ package angolodelleidee.catalogovirtuale;
  */
 
 public class ProductItem {
-    private final Prodotto product;
+    private Prodotto product;
 
     public ProductItem(Prodotto inviteWrapper) {
         this.product = inviteWrapper;
@@ -20,6 +20,10 @@ public class ProductItem {
 
         return product.equals(that.product);
 
+    }
+
+    public void setProduct(Prodotto product) {
+        this.product = product;
     }
 
     public Prodotto getProduct() {

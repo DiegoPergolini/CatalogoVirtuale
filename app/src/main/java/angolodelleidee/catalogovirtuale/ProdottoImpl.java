@@ -15,7 +15,7 @@ public class ProdottoImpl implements Prodotto {
     public ProdottoImpl(Product categoria, String codice) {
         this.categoria = categoria;
         this.codice = codice;
-        this.quantita = 1;
+        this.quantita = 0;
     }
     public ProdottoImpl(Product categoria, String codice,int quantita) {
         this.categoria = categoria;

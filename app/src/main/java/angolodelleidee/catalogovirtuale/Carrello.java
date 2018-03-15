@@ -33,7 +33,7 @@ public class Carrello {
         }
         return Carrello.INSTANCE;
     }
-    public void addProdotto(Product categoria,Prodotto prodotto){
+    public Prodotto addProdotto(Product categoria,Prodotto prodotto){
         final List<String> productCodes = new LinkedList<>();
         for(Prodotto p : this.carrello.get(categoria)){
             productCodes.add(p.getCodice());
@@ -41,12 +41,15 @@ public class Carrello {
         if(productCodes.contains(prodotto.getCodice())){
             for(Prodotto p : this.carrello.get(categoria)){
                 if(p.getCodice().equals(prodotto.getCodice())){
-                    p.aumentaQuantita(prodotto.getQuantita());
                 }
+                p.aumentaQuantita(prodotto.getQuantita());
+                return p;
             }
         }else {
             this.carrello.get(categoria).add(prodotto);
+            return prodotto;
         }
+        return null;
     }
 
     public boolean removeProduct(String id){
