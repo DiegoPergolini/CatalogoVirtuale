@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:paddingTop="5sp"
+    android:paddingBottom="5sp"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/product_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="20sp"
+        android:layout_marginRight="20sp"
+        android:paddingLeft="20sp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Menu"
+        android:textSize="22sp" />
+
+    <ImageView
+        android:layout_width="46sp"
+        android:layout_height="46sp"
+        android:paddingRight="15sp"
+
+        android:layout_alignParentEnd="true"
+        android:src="@drawable/arrow_right"
+        android:layout_alignParentRight="true" />
+
+
+
+</RelativeLayout>
