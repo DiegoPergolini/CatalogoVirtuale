@@ -9,6 +9,7 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:text="Scegli la categoria"
+        android:textAppearance="@style/TextAppearance.AppCompat.Menu"
         android:textSize="36sp" />
 
     <ListView

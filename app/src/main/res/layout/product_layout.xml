@@ -8,6 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.AppCompat.Menu"
         android:textSize="30sp" />
 
     <GridView

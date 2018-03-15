@@ -72,7 +72,26 @@ public enum Product {
 
         return toReturn;
     }
+    public List<Prodotto> getCategoryProducts(){
+        List<Prodotto> toReturn = new LinkedList<>();
+        int maxValue = 0;
+        if(this.getTipoCodice() == TipoCodice.NUMERICO){
+            maxValue = Integer.parseInt(this.codiceMax);
+        }else {
+            maxValue = 26;
 
+            for (int i = 0; i< maxValue;i++){
+                char lettera = (char) ('A'+i);
+                toReturn.add(new ProdottoImpl(this,this.getCodiceCategoria()+"-"+lettera));
+            }
+            return toReturn;
+        }
+        for (int i = 0; i< maxValue;i++){
+            toReturn.add(new ProdottoImpl(this,this.getCodiceCategoria()+"-"+(i+1)));
+        }
+
+        return toReturn;
+    }
     @Override
     public String toString() {
         return "Product{" +

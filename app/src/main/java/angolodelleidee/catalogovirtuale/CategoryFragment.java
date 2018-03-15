@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
 /**
  * Created by diego on 15/03/2017.
@@ -51,7 +50,7 @@ public class CategoryFragment extends Fragment {
          * del suddetto layout che si occuperà della presentazione della stringa, e la collezzione di stringhe da presentare.
          */
 
-        ArrayAdapter<String> statesAdapter = new ArrayAdapter<>(getActivity(), R.layout.list_item_states, R.id.txv_state, categorie);
+        ArrayAdapter<String> statesAdapter = new ArrayAdapter<>(getActivity(), R.layout.list_category, R.id.product_text_view, categorie);
 
         //L'adapter appena creato viene passato alla ListView tramite il metodo apposito
         lsvStates.setAdapter(statesAdapter);
