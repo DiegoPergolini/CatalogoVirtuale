@@ -8,14 +8,23 @@ import java.util.List;
  */
 
 public enum Product {
+    APN("Appendiporta","APN",TipoCodice.NUMERICO,"30"),
+    BAC("Banner Baby-BAC","BAC",TipoCodice.ALFABETICO,"Z"),
+    BAR("Banner Baby-BAR","BAR",TipoCodice.ALFABETICO,"Z"),
+    COR("Calamite Baby","COR",TipoCodice.ALFABETICO,"Z"),
+    MCQ("Calamite Mignon","MCQ",TipoCodice.NUMERICO,"36"),
+    CMS("Calamite Pois","CMS",TipoCodice.NUMERICO,"54"),
+    CLQ("Calamite Francobollo","CLQ",TipoCodice.NUMERICO,"48"),
+    FGO("Formelle ","FGO",TipoCodice.NUMERICO,"36"),
     TGV("Targhette Ovali","TGV",TipoCodice.NUMERICO,"76"),
-    FGO("Formelle 20x20","FGO",TipoCodice.NUMERICO,"36"),
-    CMQ("Calamite Mignon","MCQ",TipoCodice.NUMERICO,"36"),
-    STT("Sottopentola","STT",TipoCodice.NUMERICO,"12"),
-    FGM("Formelle 22x36","FGM",TipoCodice.NUMERICO,"8"),
-    TFM("Targhe con ferretto","TFM",TipoCodice.NUMERICO,"80"),
-    TSP("Targhe con spago","TSP",TipoCodice.NUMERICO,"48"),
-    BAC("Banner l'alfabeto degli Orsetti-BAC","BAC",TipoCodice.ALFABETICO,"Z");
+    QRR("Quadretti con ferretto","QRR",TipoCodice.NUMERICO,"48"),
+    SSP("Saponi Family","SSP",TipoCodice.NUMERICO,"3"),
+    SBL("Segnalibri","SBL",TipoCodice.NUMERICO,"24"),
+    STT("Sottopentola","STT",TipoCodice.NUMERICO,"10"),
+    TFM("Targhe con ferretto","TFM",TipoCodice.NUMERICO,"86"),
+    TSP("Targhe con spago","TSP",TipoCodice.NUMERICO,"60"),
+    TVC("Tavole country","TVC",TipoCodice.NUMERICO,"24"),
+    TRM("Termometri","TRM",TipoCodice.NUMERICO,"12");
 
     private enum TipoCodice{
         ALFABETICO,NUMERICO;
